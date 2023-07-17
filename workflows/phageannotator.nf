@@ -33,6 +33,10 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 */
 
 //
+// MODULE: Consisting of local modules
+//
+
+//
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
@@ -46,11 +50,11 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                        } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { GENOMAD_DOWNLOAD              } from '../modules/nf-core/genomad/download/main'
-include { GENOMAD_ENDTOEND              } from '../modules/nf-core/genomad/endtoend/main'
+include { FASTQC                                } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                               } from '../modules/nf-core/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { GENOMAD_DOWNLOAD                      } from '../modules/nf-core/genomad/download/main'
+include { GENOMAD_ENDTOEND                      } from '../modules/nf-core/genomad/endtoend/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,6 +84,27 @@ workflow PHAGEANNOTATOR {
         INPUT_CHECK.out.fastq
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+    /*
+    ----------------------------------------------------------
+    Phage identification (de novo)
+    ----------------------------------------------------------
+    */
+    //
+    // MODULE: Download geNomad's database
+    //
+    if ( params.genomad_db ) {
+        ch_genomad_db = params.genomad_db
+    } else {
+        ch_genomad_db = GENOMAD_DOWNLOAD ( ).genomad_db
+        ch_versions = ch_versions.mix(GENOMAD_DOWNLOAD.out.versions.first())
+    }
+
+    //
+    // MODULE: Identify viral sequences using geNomad
+    //
+    GENOMAD_ENDTOEND ( INPUT_CHECK.out.fasta, ch_genomad_db )
+    ch_versions = ch_versions.mix(GENOMAD_ENDTOEND.out.versions.first())
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
