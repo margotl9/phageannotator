@@ -68,6 +68,7 @@ workflow PHAGEANNOTATOR {
 
     ch_versions = Channel.empty()
 
+    // Import input samplesheet data using nf-validation
     Channel
         .fromSamplesheet("input")
         .multiMap { meta, fastq_1, fastq_2, fasta ->
@@ -77,7 +78,7 @@ workflow PHAGEANNOTATOR {
         .set { ch_input }
 
     //
-    // MODULE: Run FastQC
+    // MODULE: Run FastQC on reads
     //
     FASTQC (
         ch_input.fastq
@@ -93,7 +94,7 @@ workflow PHAGEANNOTATOR {
     // MODULE: Download geNomad's database
     //
     if ( params.genomad_db ) {
-        ch_genomad_db = params.genomad_db
+        ch_genomad_db = file(params.genomad_db, checkIfExists: true)
     } else {
         ch_genomad_db = GENOMAD_DOWNLOAD ( ).genomad_db
         ch_versions = ch_versions.mix(GENOMAD_DOWNLOAD.out.versions.first())
@@ -102,8 +103,10 @@ workflow PHAGEANNOTATOR {
     //
     // MODULE: Identify viral sequences using geNomad
     //
-    GENOMAD_ENDTOEND ( INPUT_CHECK.out.fasta, ch_genomad_db )
+    GENOMAD_ENDTOEND ( ch_input.fasta, ch_genomad_db )
     ch_versions = ch_versions.mix(GENOMAD_ENDTOEND.out.versions.first())
+
+
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

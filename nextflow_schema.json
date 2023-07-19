@@ -5,6 +5,33 @@
     "description": "Identification, annotation, and quantification of phages in (meta)-genomic sequences",
     "type": "object",
     "definitions": {
+        "de_novo_phage_identification_options": {
+            "title": "De novo phage identification options",
+            "type": "object",
+            "description": "Identify phage sequences present in input assemblies",
+            "default": "",
+            "properties": {
+                "genomad_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to directory containing pre-downloaded geNomad database"
+                },
+                "genomad_min_score": {
+                    "type": "number",
+                    "description": "Minimum score for geNomad to classify a sequence as phage"
+                },
+                "genomad_max_fdr": {
+                    "type": "number",
+                    "description": "Maximum FDR for geNomad to classify a sequence as phage (enables score calibration)"
+                },
+                "genomad_splits": {
+                    "type": "integer",
+                    "description": "Number of splits to use for geNomad's MMSeqs2 search (higher numbers decrease memory usage)"
+                }
+            },
+            "fa_icon": "fas fa-dna"
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -176,14 +203,12 @@
                     "type": "boolean",
                     "description": "Display help text.",
                     "fa_icon": "fas fa-question-circle",
-                    "default": false,
                     "hidden": true
                 },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
-                    "default": false,
                     "hidden": true
                 },
                 "publish_dir_mode": {
@@ -207,7 +232,6 @@
                     "type": "boolean",
                     "description": "Send plain-text email instead of HTML.",
                     "fa_icon": "fas fa-remove-format",
-                    "default": false,
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
@@ -222,7 +246,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "default": false,
                     "hidden": true
                 },
                 "hook_url": {
@@ -261,7 +284,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
-                    "default": false,
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
@@ -269,7 +291,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters fails when an unrecognised parameter is found.",
-                    "default": false,
                     "hidden": true,
                     "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
                 },
@@ -277,7 +298,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters in lenient more.",
-                    "default": false,
                     "hidden": true,
                     "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
@@ -285,6 +305,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/de_novo_phage_identification_options"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },
