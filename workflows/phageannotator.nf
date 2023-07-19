@@ -54,6 +54,9 @@ include { MULTIQC                               } from '../modules/nf-core/multi
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { GENOMAD_DOWNLOAD                      } from '../modules/nf-core/genomad/download/main'
 include { GENOMAD_ENDTOEND                      } from '../modules/nf-core/genomad/endtoend/main'
+include { CHECKV_DOWNLOADDATABASE } from '../modules/nf-core/checkv/downloaddatabase/main'
+include { CHECKV_ENDTOEND } from '../modules/nf-core/checkv/endtoend/main'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -106,6 +109,26 @@ workflow PHAGEANNOTATOR {
     GENOMAD_ENDTOEND ( ch_input.fasta, ch_genomad_db )
     ch_versions = ch_versions.mix(GENOMAD_ENDTOEND.out.versions.first())
 
+    /*
+    ----------------------------------------------------------
+    Quality Filter
+    ----------------------------------------------------------
+    */
+    //
+    // MODULE: Download checkV's database
+    //
+    if ( params.checkv_db ) {
+        ch_checkv_db = file(params.checkv_db, checkIfExists: true)
+    } else {
+        ch_checkv_db = CHECKV_DOWNLOADDATABASE ( ).checkv_db
+        ch_versions = ch_versions.mix(CHECKV_DOWNLOADDATABASE.out.versions.first())
+    }
+
+    //
+    // MODULE: Quality filter viral sequences with CheckV
+    //
+    CHECKV_ENDTOEND ( ch_input.fasta, ch_checkv_db )
+    ch_versions = ch_versions.mix(CHECKV_ENDTOEND.out.versions.first())
 
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
