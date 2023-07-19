@@ -127,7 +127,7 @@ workflow PHAGEANNOTATOR {
     //
     // MODULE: Quality filter viral sequences with CheckV
     //
-    CHECKV_ENDTOEND ( ch_input.fasta, ch_checkv_db )
+    CHECKV_ENDTOEND ( GENOMAD_ENDTOEND.out.virus_fasta, ch_checkv_db )
     ch_versions = ch_versions.mix(CHECKV_ENDTOEND.out.versions.first())
 
 
