@@ -54,8 +54,10 @@ include { MULTIQC                               } from '../modules/nf-core/multi
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { GENOMAD_DOWNLOAD                      } from '../modules/nf-core/genomad/download/main'
 include { GENOMAD_ENDTOEND                      } from '../modules/nf-core/genomad/endtoend/main'
-include { CHECKV_DOWNLOADDATABASE } from '../modules/nf-core/checkv/downloaddatabase/main'
-include { CHECKV_ENDTOEND } from '../modules/nf-core/checkv/endtoend/main'
+include { CHECKV_DOWNLOADDATABASE               } from '../modules/nf-core/checkv/downloaddatabase/main'
+include { CHECKV_ENDTOEND                       } from '../modules/nf-core/checkv/endtoend/main'
+include { BLAST_MAKEBLASTDB                     } from '../modules/nf-core/blast/makeblastdb/main'
+include { BLAST_BLASTN                          } from '../modules/nf-core/blast/blastn/main'
 
 
 /*
@@ -130,6 +132,16 @@ workflow PHAGEANNOTATOR {
     CHECKV_ENDTOEND ( GENOMAD_ENDTOEND.out.virus_fasta, ch_checkv_db )
     ch_versions = ch_versions.mix(CHECKV_ENDTOEND.out.versions.first())
 
+    /*
+    ----------------------------------------------------------
+    ANI-Clustering
+    ----------------------------------------------------------
+    */
+    //
+    // MODULE: Make BLAST database
+    //
+    blast_db = BLAST_MAKEBLASTDB ( CHECKV_ENDTOEND.out.viruses ).db
+    BLAST_BLASTN ( CHECKV_ENDTOEND.out.viruses, blast_db )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
