@@ -8,7 +8,7 @@
         "phage_quality_options": {
             "title": "Phage quality options",
             "type": "object",
-            "description": "",
+            "description": "Assess phage quality and filter sequences",
             "default": "",
             "properties": {
                 "checkv_db": {
