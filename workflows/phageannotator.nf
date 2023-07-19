@@ -54,8 +54,8 @@ include { MULTIQC                               } from '../modules/nf-core/multi
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { GENOMAD_DOWNLOAD                      } from '../modules/nf-core/genomad/download/main'
 include { GENOMAD_ENDTOEND                      } from '../modules/nf-core/genomad/endtoend/main'
-include { CHECKV_DOWNLOADDATABASE } from '../modules/nf-core/checkv/downloaddatabase/main'
-include { CHECKV_ENDTOEND } from '../modules/nf-core/checkv/endtoend/main'
+include { CHECKV_DOWNLOADDATABASE               } from '../modules/nf-core/checkv/downloaddatabase/main'
+include { CHECKV_ENDTOEND                       } from '../modules/nf-core/checkv/endtoend/main'
 
 
 /*
