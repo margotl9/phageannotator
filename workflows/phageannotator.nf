@@ -136,7 +136,7 @@ workflow PHAGEANNOTATOR {
     Phage host prediction
     ----------------------------------------------------------
     */
-    iphob_db = IPHOP_DOWNLOAD ( ).iphob_db
+    iphob_db = IPHOP_DOWNLOAD ( ).iphop_db
     IPHOP_PREDICT ( checkv_virus_fasta, iphop_db)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
