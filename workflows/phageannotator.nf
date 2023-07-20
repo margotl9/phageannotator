@@ -140,7 +140,7 @@ workflow PHAGEANNOTATOR {
     //
     // MODULE: Make BLAST database
     //
-    blast_db = BLAST_MAKEBLASTDB ( CHECKV_ENDTOEND.out.viruses ).db
+    blast_db = BLAST_MAKEBLASTDB ( CHECKV_ENDTOEND.out.viruses.map{ it[1] } ).db
     BLAST_BLASTN ( CHECKV_ENDTOEND.out.viruses, blast_db )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
