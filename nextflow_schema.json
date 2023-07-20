@@ -5,6 +5,17 @@
     "description": "Identification, annotation, and quantification of phages in (meta)-genomic sequences",
     "type": "object",
     "definitions": {
+        "phage_host_prediction": {
+            "title": "Phage host prediction",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "iphop_min_score": {
+                    "type": "string"
+                }
+            }
+        },
         "phage_quality_options": {
             "title": "Phage quality options",
             "type": "object",
@@ -327,6 +338,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/phage_host_prediction"
+        },
         {
             "$ref": "#/definitions/phage_quality_options"
         },
