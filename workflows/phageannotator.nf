@@ -57,7 +57,7 @@ include { GENOMAD_ENDTOEND                      } from '../modules/nf-core/genom
 include { CHECKV_DOWNLOADDATABASE } from '../modules/nf-core/checkv/downloaddatabase/main'
 include { CHECKV_ENDTOEND } from '../modules/nf-core/checkv/endtoend/main'
 include { IPHOP_DOWNLOAD } from '../modules/nf-core/iphop/download/main'
-
+include { IPHOP_PREDICT } from '../modules/nf-core/iphop/predict/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -128,8 +128,16 @@ workflow PHAGEANNOTATOR {
     // MODULE: Quality filter viral sequences with CheckV
     //
     CHECKV_ENDTOEND ( GENOMAD_ENDTOEND.out.virus_fasta, ch_checkv_db )
+    checkv_virus_fasta = CHECKV_ENDTOEND.out.viruses
     ch_versions = ch_versions.mix(CHECKV_ENDTOEND.out.versions.first())
 
+    /*
+    ----------------------------------------------------------
+    Phage host prediction
+    ----------------------------------------------------------
+    */
+    iphob_db = IPHOP_DOWNLOAD ( ).iphob_db
+    IPHOP_PREDICT ( checkv_virus_fasta, iphop_db)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

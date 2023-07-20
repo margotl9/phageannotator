@@ -54,6 +54,13 @@
                             "modules"
                         ]
                     },
+                    "iphop/predict": {
+                        "branch": "master",
+                        "git_sha": "3b981702b808cca8c81d66c9a4d65584a0a2e968",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "f2d63bd5b68925f98f572eed70993d205cc694b7",
