@@ -56,7 +56,7 @@ include { GENOMAD_DOWNLOAD                      } from '../modules/nf-core/genom
 include { GENOMAD_ENDTOEND                      } from '../modules/nf-core/genomad/endtoend/main'
 include { CHECKV_DOWNLOADDATABASE } from '../modules/nf-core/checkv/downloaddatabase/main'
 include { CHECKV_ENDTOEND } from '../modules/nf-core/checkv/endtoend/main'
-
+include { IPHOP_DOWNLOAD } from '../modules/nf-core/iphop/download/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
